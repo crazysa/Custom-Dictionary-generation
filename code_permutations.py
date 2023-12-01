@@ -3,6 +3,7 @@ import random
 import numpy as np
 import cv2.aruco as aruco
 import cv2
+import json
 
 def hamming_distance(str1, str2):
 
@@ -52,7 +53,22 @@ the_byte_list_to_use = []
 for value in changed_selected_np_array:
     the_byte_list_to_use.append(aruco.Dictionary_getByteListFromBits(value)[0])
 
+print("Value before writing to json", selected_np_array)
+with open('custom_8x8_dictionary.json', 'w') as file:
+    json.dump(selected_np_array, file)
+
+with open('custom_8x8_dictionary.json', 'r') as file:
+    print(json.load(file))
+
 my_dict.bytesList = np.array(the_byte_list_to_use)
 
 for i in range(len(my_dict.bytesList)):
     cv2.imwrite("custom_aruco_test" + str(i) + ".png", aruco.drawMarker(my_dict, i, 256))
+
+# charuco_board = cv2.aruco.CharucoBoard_create(
+#         5  , 5, 1, 0.9, my_dict)
+
+board = aruco.CharucoBoard_create(
+        5, 5, 1, 1*0.8, my_dict)
+imboard = board.draw((1020, 1980))
+cv2.imwrite("charuco_value.png", imboard)
